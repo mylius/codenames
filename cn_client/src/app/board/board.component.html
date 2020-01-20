@@ -26,7 +26,7 @@
             <h4>Der Hinweis beschreibt {{quantIn}} Worte.</h4>
         </div>
         <button *ngIf="!hinter && ((redIsNext && user_Data.team == 'red') || (!redIsNext && user_Data.team == 'blue'))" class="btn btn-primary" nbButton (click)="guesserDone()" >done</button>
-        <form *ngIf="hinter && ((redIsNext && user_Data.team == 'red') || (!redIsNext && user_Data.team == 'blue'))" name="hintForm" [formGroup]="hintForm" (ngSubmit)="hintForm.valid && onSubmit()"
+        <form *ngIf="hinter && !hintGiven && ((redIsNext && user_Data.team == 'red') || (!redIsNext && user_Data.team == 'blue'))" name="hintForm" [formGroup]="hintForm" (ngSubmit)="hintForm.valid && onSubmit()"
             class="was-validated">
             <div class="form-group">
                 <input nbInput type="text" class="form-control" formControlName="word" placeholder="Hinweis"

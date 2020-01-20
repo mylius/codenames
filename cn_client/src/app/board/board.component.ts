@@ -31,6 +31,7 @@ export class BoardComponent implements OnInit {
     word: new FormControl('', [Validators.required, Validators.maxLength(20)]),
     quantity: new FormControl('', [Validators.required, Validators.maxLength(2)])
   });
+  hintGiven: boolean;
 
   constructor() {
 
@@ -59,6 +60,10 @@ export class BoardComponent implements OnInit {
       this.words = game.board.words;
       this.clicked = game.board.clicked;
       this.labels = game.board.labels;
+      if (this.redIsNext != game.redIsNext){
+        console.log("new round")
+        this.hintGiven = false;
+      }
       this.redIsNext = game.redIsNext;
       this.winner = game.winner;
       this.hintIn = game.hint.word;
@@ -85,6 +90,8 @@ export class BoardComponent implements OnInit {
       quantity: this.hintForm.value.quantity,
     };
     this.socket.emit("sendHint", hint);
+    this.hintGiven = true;
+    console.log(this.hintGiven);
   }
   get player() {
     return this.redIsNext ? "red" : "blue";
