@@ -15,7 +15,8 @@ export class BoardComponent implements OnInit {
   redIsNext: boolean;
   winner: string;
   labels: string[];
-  combinedArray: any[];
+  combinedGuesser = [];
+  combinedHinter = [];
   clicked: boolean[];
   user_Data = {
     team: "",
@@ -32,6 +33,7 @@ export class BoardComponent implements OnInit {
     quantity: new FormControl('', [Validators.required, Validators.maxLength(2)])
   });
   hintGiven: boolean;
+  
 
   constructor() {
 
@@ -56,7 +58,7 @@ export class BoardComponent implements OnInit {
   ngAfterViewInit() {
     this.socket.on("game", game => {
       console.log(game);
-      this.combinedArray = [];
+      this.combinedGuesser=[];
       this.words = game.board.words;
       this.clicked = game.board.clicked;
       this.labels = game.board.labels;
@@ -69,14 +71,24 @@ export class BoardComponent implements OnInit {
       this.hintIn = game.hint.word;
       this.quantIn = game.hint.quantity;
       for (var i = 0; i < this.words.length; i++) {
-        this.combinedArray.push([this.words[i], this.labels[i], this.clicked[i]]);
+        this.combinedGuesser.push([this.words[i], this.labels[i], this.clicked[i]]);
       }
+      console.log(this.combinedGuesser)
     });
     this.socket.on("user_data", user_data => {
       this.user_Data.team = user_data.team;
       this.user_Data.hinter = user_data.hinter;
       console.log(this.user_Data);
     });
+    this.socket.on("hinterBoard", hinterBoard =>{
+      console.log("Hinterboard")
+      console.log(hinterBoard)
+      this.combinedHinter=[];
+      for (var i = 0; i < hinterBoard.length; i++) {
+        this.combinedHinter.push([this.words[i], hinterBoard[i]]);
+      }
+      console.log(this.combinedHinter)
+    })
 
   }
 

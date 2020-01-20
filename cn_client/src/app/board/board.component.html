@@ -5,7 +5,7 @@
 <h2 *ngIf="winner">Team {{winner}} hat gewonnen!</h2>
 <div class="columns">
     <main>
-        <app-square *ngFor="let obj of combinedArray; let j = index;" [value]="obj[0]" [result]="obj[1]"
+        <app-square *ngFor="let obj of combinedGuesser; let j = index;" [value]="obj[0]" [result]="obj[1]"
             [clicked]="obj[2]" [disable]="hinter" (click)="makeMove(j)">
         </app-square>
 
@@ -15,7 +15,7 @@
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
-            <app-square-hinter *ngFor="let obj of combinedArray; let j = index;" [value]="obj[0]" [result]="obj[1]">
+            <app-square-hinter *ngFor="let obj of combinedHinter; let j = index;" [value]="obj[0]" [result]="obj[1]">
             </app-square-hinter>
         </ng-container>
     </main>
