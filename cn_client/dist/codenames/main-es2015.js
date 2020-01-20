@@ -337,7 +337,7 @@ __webpack_require__.r(__webpack_exports__);
 
 let AppComponent = class AppComponent {
     constructor() {
-        this.title = 'codenames';
+        this.title = 'cn_client';
     }
 };
 AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -673,7 +673,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_2__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /mnt/data/nextcloud/learning/codenames_angular/codenames/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /mnt/data/nextcloud/learning/cn_client_angular/cn_client/src/main.ts */"./src/main.ts");
 
 
 /***/ })

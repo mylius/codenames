@@ -353,7 +353,7 @@
   /***/
   function _(module, exports, __webpack_require__) {
     module.exports = __webpack_require__(
-    /*! /mnt/data/nextcloud/learning/codenames_angular/codenames/src/styles.scss */
+    /*! /mnt/data/nextcloud/learning/cn_client_angular/cn_client/src/styles.scss */
     "./src/styles.scss");
     /***/
   }

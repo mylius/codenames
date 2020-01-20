@@ -1,0 +1,18 @@
+@import '~@nebular/theme/styles/theming';
+@import '~@nebular/theme/styles/themes/default';
+
+$nb-themes: nb-register-theme((
+
+  // add your variables here like:
+
+  color-info-100: #3f3f3f,
+  color-info-200: #3f3f3f,
+  color-info-300: #3f3f3f,
+  color-info-400: #3f3f3f,
+  color-info-500: #3f3f3f,
+  color-info-600: #3f3f3f,
+  color-info-700: #3f3f3f,
+  color-info-800: #3f3f3f,
+  color-info-900: #3f3f3f,
+
+), default, default);

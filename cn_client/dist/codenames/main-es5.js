@@ -739,7 +739,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     var AppComponent = function AppComponent() {
       _classCallCheck(this, AppComponent);
 
-      this.title = 'codenames';
+      this.title = 'cn_client';
     };
 
     AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -1260,7 +1260,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   /***/
   function _(module, exports, __webpack_require__) {
     module.exports = __webpack_require__(
-    /*! /mnt/data/nextcloud/learning/codenames_angular/codenames/src/main.ts */
+    /*! /mnt/data/nextcloud/learning/cn_client_angular/cn_client/src/main.ts */
     "./src/main.ts");
     /***/
   }
