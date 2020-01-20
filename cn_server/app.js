@@ -8,6 +8,7 @@ var users = {};
 var board = {};
 var game = {};
 var guesses = 0;
+var hinterBoard = [];
 class team {
   constructor(color) {
     this.color = color;
@@ -73,9 +74,10 @@ function newGame() {
   }
   board = {
     words: randomChoiceNoReplace(word_list, 25),
-    labels: randomChoiceNoReplace(labelList, 25),
+    labels: Array(25).fill("unkown"),
     clicked: clicked
   };
+  hinterBoard =randomChoiceNoReplace(labelList, 25);
   game.board = board;
   team.red.chooseHinter();
   team.blue.chooseHinter();
@@ -126,7 +128,7 @@ function checkIsClicked(indexArray) {
 function declareWinner(idx) {
   var redTiles = [];
   var blueTiles = [];
-  if (game.board.labels.findIndex(findKill) == idx) {
+  if (hinterBoard.findIndex(findKill) == idx) {
     if (game.redIsNext) {
       game.winner = "blue"
     }
@@ -135,8 +137,8 @@ function declareWinner(idx) {
     }
   }
 
-  redTiles = getAllIndexes(game.board.labels, "red");
-  blueTiles = getAllIndexes(game.board.labels, "blue");
+  redTiles = getAllIndexes(hinterBoard, "red");
+  blueTiles = getAllIndexes(hinterBoard, "blue");
   if (checkIsClicked(redTiles)) {
     game.winner = "red"
   }
@@ -182,21 +184,38 @@ Socketio.on("connection", socket => {
   user = updateUser(user);
   user.emit("user_data", user.data);
   user.emit("game", game);
+  if (user.data.hinter){
+    user.emit("hinterBoard", hinterBoard)
+  }
   user.on("move", idx => {
     if (!clicked[idx]) {
       game.board.clicked.splice(idx, 1, true);
       declareWinner(idx);
+      game.board.labels=[];
+      for (label in hinterBoard){
+        if (clicked[label]==true){
+          game.board.labels.push(hinterBoard[label])
+        }
+        else{
+          game.board.labels.push("unkown")
+        }
+      }
       guesses ++;
-      if (game.board.labels[idx] != user.data.team){
+      if (hinterBoard[idx] != user.data.team){
         game.redIsNext = !game.redIsNext;
-        guesses = 0;
+        guesses =   0;
       }
       if (!game.winner && guesses == game.hint.quantity+1) {
         game.redIsNext = !game.redIsNext;
         guesses = 0;
       }
     }
+    console.log(game.board.labels)
     Socketio.emit("game", game);
+    for (hintgiver in users)
+    if (users[hintgiver].data.hinter){
+      users[hintgiver].emit("hinterBoard", hinterBoard)
+    }
   })
   user.on("newGame", inGame => {
     newGame();
