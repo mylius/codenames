@@ -188,10 +188,6 @@ Socketio.on("connection", socket => {
       declareWinner(idx);
       guesses ++;
       if (game.board.labels[idx] != user.data.team){
-        console.log(user.data.team)
-        console.log(game.board.labels[idx])
-        console.log(typeof(game.board.clicked[idx]))
-        console.log(typeof(user.data.team))
         game.redIsNext = !game.redIsNext;
         guesses = 0;
       }
@@ -212,6 +208,14 @@ Socketio.on("connection", socket => {
       word: inHint.word, 
       quantity: inHint.quantity,
     };
+    for (user in users){
+      users[user].emit("game", game);
+    }
+  })
+  user.on("guesserDone", done => {
+    console.log(done);
+    game.redIsNext = !game.redIsNext;
+    guesses = 0;
     for (user in users){
       users[user].emit("game", game);
     }

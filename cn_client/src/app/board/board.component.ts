@@ -75,6 +75,10 @@ export class BoardComponent implements OnInit {
 
   }
 
+  guesserDone(){
+    this.socket.emit("guesserDone", true)
+  }
+
   onSubmit() {
     var hint = {
       word: this.hintForm.value.word,
