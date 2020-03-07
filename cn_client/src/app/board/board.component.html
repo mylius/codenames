@@ -20,14 +20,16 @@
         </ng-container>
     </main>
     <div>
-        
+
         <div *ngIf="hintIn">
             <h4>Der Hinweis ist: {{hintIn}}</h4>
             <h4>Der Hinweis beschreibt {{quantIn}} Worte.</h4>
         </div>
-        <button *ngIf="!hinter && ((redIsNext && user_Data.team == 'red') || (!redIsNext && user_Data.team == 'blue'))" class="btn btn-primary" nbButton (click)="guesserDone()" >done</button>
-        <form *ngIf="hinter && !hintGiven && ((redIsNext && user_Data.team == 'red') || (!redIsNext && user_Data.team == 'blue'))" name="hintForm" [formGroup]="hintForm" (ngSubmit)="hintForm.valid && onSubmit()"
-            class="was-validated">
+        <button *ngIf="!hinter && ((redIsNext && user_Data.team == 'red') || (!redIsNext && user_Data.team == 'blue'))"
+            class="btn btn-primary" nbButton (click)="guesserDone()">done</button>
+        <form
+            *ngIf="hinter && !hintGiven && ((redIsNext && user_Data.team == 'red') || (!redIsNext && user_Data.team == 'blue'))"
+            name="hintForm" [formGroup]="hintForm" (ngSubmit)="hintForm.valid && onSubmit()" class="was-validated">
             <div class="form-group">
                 <input nbInput type="text" class="form-control" formControlName="word" placeholder="Hinweis"
                     [ngClass]="{'is-invalid':hintForm.get('word').touched && hintForm.get('word').invalid}" required />
@@ -47,18 +49,26 @@
                     Notwendig
                 </div>
             </div>
-                <button class="btn btn-primary" nbButton [disabled]="!hintForm.valid">Senden</button>
+            <button class="btn btn-primary" nbButton [disabled]="!hintForm.valid">Senden</button>
         </form>
-        <nb-chat title="Chat" size="medium" status="success">
+        <nb-chat *ngIf="user_Data.team == 'blue'" title="Chat" size="medium" status="primary">
 
-                <nb-chat-message *ngFor="let message of messages"
-                                 [message]="message.text"
-                                 [reply]="(message.name==user_Data.name)"
-                                 [sender]="message.name"
-                                 [date]="message.date"></nb-chat-message>
-                <nb-chat-form (send)="sendMessage($event, user_Data.name, 'https://i.gifer.com/no.gif')" [showButton]="false" [dropFiles]="true">
-                </nb-chat-form>
-              </nb-chat>
+            <nb-chat-message *ngFor="let message of messages" [message]="message.text"
+                [reply]="(message.name==user_Data.name)" [sender]="message.name" [date]="message.date"
+                [avatar]="message.avatar"></nb-chat-message>
+            <nb-chat-form *ngIf="!hinter" (send)="sendMessage($event, user_Data.name, 'assets/img/blue_ava.png')"
+                [showButton]="false" [dropFiles]="true">
+            </nb-chat-form>
+        </nb-chat>
+        <nb-chat *ngIf="user_Data.team == 'red'" title="Chat" size="medium" status="danger">
+
+            <nb-chat-message *ngFor="let message of messages" [message]="message.text"
+                [reply]="(message.name==user_Data.name)" [sender]="message.name" [date]="message.date"
+                [avatar]="message.avatar"></nb-chat-message>
+            <nb-chat-form *ngIf="!hinter" (send)="sendMessage($event, user_Data.name, 'assets/img/red_ava.png')"
+                [showButton]="false" [dropFiles]="true">
+            </nb-chat-form>
+        </nb-chat>
     </div>
-    
+
 </div>

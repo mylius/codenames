@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import io from "socket.io-client";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ChatService } from '../chat.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -44,7 +44,7 @@ export class BoardComponent implements OnInit {
   messages: string[] = [];
 
 
-  constructor(private chatService: ChatService) {
+  constructor() {
 
   }
 
@@ -57,9 +57,8 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.socket = io("http://localhost:3000")
-    this.chatService
-      .getMessages()
+    this.socket = io("http://localhost:3000");
+    this.getMessages()
       .subscribe((message: string) => {
         this.messages.push(message);
       });
@@ -132,14 +131,25 @@ export class BoardComponent implements OnInit {
     return this.user_Data.team;
   }
 
-  sendMessage(event: any, userName: string) {
-    var message =  {
+  sendMessage(event: any, userName: string, avatar: string) {
+    var message = {
       text: event.message,
       reply: false,
       date: new Date(),
       name: userName,
+      team: this.user_Data.team,
+      avatar: avatar,
     }
-    this.chatService.sendMessage(message);
+    this.socket.emit("new-message", message);
+  }
+
+
+  getMessages = () => {
+    return Observable.create((observer) => {
+      this.socket.on('new-message', (message) => {
+        observer.next(message);
+      });
+    });
   }
 
   makeMove(idx: number) {
