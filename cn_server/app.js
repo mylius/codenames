@@ -2,6 +2,9 @@ const Express = require("express")();
 const Http = require("http").Server(Express);
 const Socketio = require("socket.io")(Http);
 
+
+
+var user_names = ["Chevalier","Accord","Skitter","Scion","Defiant","Dragon","Tattletale","Panacea","Antares","Hellhound","Regent","Coil","Shadowstalker","Galant","Browbeat","Aegis","Golem","Eidolon","Alexandria","Hero","Legend","Newter","Shadowstalker","Tecton","Jamada","Nilbog","Shatterbird","Chariot","Grue","Labrat","Greyboy"];
 var word_list = ["König", "Fall", "Tor", "Flur", "Genie", "Erika", "Deutschland", "Gabel", "Löwe", "Bär", "Wurm", "Schimmel", "Lösung", "Schloss", "Drachen", "Drossel", "Rücken", "Kamm", "England", "Toast", "Rock", "Koks", "Golf", "Kleeblatt", "Burg", "Pilot", "Soldat", "Mutter", "Linie", "Lehrer", "Schule", "Quelle", "Karte", "Stempel", "Chemie", "Kiwi", "Linse", "Loch", "Zeit", "Prinzessin", "Antarktis", "Mexiko", "Inca", "Hollywood", "Iris", "Brand", "Funken", "Brötchen", "Hexe", "Umzug", "Loge", "Stift", "Nagel", "Tod", "Leben", "Haupt", "Roboter", "Hund", "Zwerg", "Morgenstern", "Lippe", "Roulette", "Bank", "Platte", "Ritter", "Apfel", "Melone", "Mond", "Kater", "Verband", "Bund", "Abgabe", "Schirm", "Luxemburg", "Horst", "Blatt", "Leiter", "Strand", "Korn", "Jäger", "Bauer", "Bock", "Futter", "Stuhl", "Essen", "Koch", "Adler", "Käfer", "Zelle", "Scheibe", "Hand", "Doktor", "Ball", "Platte", "Knie", "Wein", "Kiefer", "Moskau", "Boxer", "Bau", "Nacht", "Netz", "Geschirr", "Löffel", "Zentaur", "Dinosaurier", "Loch Nesss", "Bach", "Turm", "Pass", "Mangel", "Fest", "Chor", "Watt", "Aufzug", "Mast", "Fackel", "Polizei", "Maler", "Staat", "Tanz", "Bogen", "Kreuz", "Punkt", "Kreis", "Rute", "Raute", "Demo", "Australien", "Blau", "Dietrich", "Lager", "Schotten", "Blinker", "Drucker", "Finger", "Bahn", "Moos", "Blüte", "Afrika", "Riegel", "Osten", "Krebs", "Schelle", "Siegel", "Leuchte", "Schein", "Elfenbein", "Superheld", "Jet", "Decke", "Läufer", "Bombe", "Pistole", "Botschaft", "Börse", "Alien", "Becken", "Shakespear", "Theater", "Quartett", "Auto", "Bergsteiger", "Hubschrauber", "Saturn", "Teleskop", "Olymp", "Boot", "Dame", "Römer", "Schnabeltier", "Konzert", "Feder", "Pirat", "Strasse", "Botschaft", "Ton", "Satellit", "Elf", "Schild", "Messe", "Skelett", "Mal", "Laster", "Wolkenkratzer", "Verein", "Kiel", "Feuer", "Mikroskop", "Erde", "Anwalt", "Taucher", "Gang", "Gift", "Pfeife", "Brücke", "Kapelle", "Zitrone", "Matte", "Hase", "Wirtschaft", "Gras", "Satz", "Strudel", "Fisch", "Wal", "Strauss", "Wind", "Kerze", "Riese", "Mark", "Luft", "Hahn", "Gürtel", "Schneemann", "Europa", "Bar", "Gesicht", "Geschoss", "Blüte", "Millionär", "Oper", "Tau", "Star", "Tisch", "Ladung", "Optik", "Oktopus", "Batterie", "Stock", "Bremse", "Kirche", "Grund", "Auge", "Ente", "Feige", "Fallschirm", "Stamm", "Katze", "Forscher", "Hering", "Jura", "Hotel", "Gehalt", "Zwerg", "Wald", "Peitsche", "Berliner", "Hamburger", "Inka", "Pinguin", "Krankheit", "Tafel", "Spion", "Bart", "Spinne", "Dieb", "Torte", "Hupe", "Schokolade", "Peking", "Krankenhaus", "Bande", "Geist", "Kippe", "Einhorn", "Läufer", "Glück", "Öl", "Rolle", "Papier", "Geschirr", "Ketchup", "Lakritze", "Fuchs", "Mine", "Engel", "Känguru", "Pflaster", "Wasser", "Niete", "Karotte", "Auflauf", "Dichtung", "Sekretär", "Kasino", "Winnetou", "Frankreich", "Honig", "Limousine", "Stadion", "Arm", "Laser", "Krieg", "Bär", "Da Vinci", "Pension"];
 var board;
 var users = {};
@@ -182,6 +185,8 @@ Socketio.on("connection", socket => {
   users[socket.id] = socket;
   var user = users[socket.id];
   user = updateUser(user);
+  user.data.name = user_names[Math.floor(Math.random() * user_names.length)];
+  user_names.splice(user_names.indexOf(user.data.name), 1)
   user.emit("user_data", user.data);
   user.emit("game", game);
   if (user.data.hinter){
@@ -210,7 +215,6 @@ Socketio.on("connection", socket => {
         guesses = 0;
       }
     }
-    console.log(game.board.labels)
     Socketio.emit("game", game);
     for (hintgiver in users)
     if (users[hintgiver].data.hinter){
@@ -222,7 +226,6 @@ Socketio.on("connection", socket => {
     user.emit("game", game);
   })
   user.on("sendHint", inHint => {
-    console.log(inHint);
     game.hint = {
       word: inHint.word, 
       quantity: inHint.quantity,
@@ -232,15 +235,21 @@ Socketio.on("connection", socket => {
     }
   })
   user.on("guesserDone", done => {
-    console.log(done);
     game.redIsNext = !game.redIsNext;
     guesses = 0;
     for (user in users){
       users[user].emit("game", game);
     }
   })
+
+  //ChatService
+  user.on('new-message', (message) => {
+   Socketio.emit("new-message",message);
+  });
+
   user.on("disconnect", nothing => {
     console.log("disconnected");
+    user_names.push(user.data.name);
     userTeam = [users[socket.id].data.team];
     team[userTeam].players = team[userTeam].players.filter(function (value, index, arr) {
       return value !== user;

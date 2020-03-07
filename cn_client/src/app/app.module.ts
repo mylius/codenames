@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { SquareComponent } from './square/square.component';
 import { BoardComponent } from './board/board.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule, NbButtonModule, NbInputModule } from '@nebular/theme';
+import { NbThemeModule, NbLayoutModule, NbButtonModule, NbInputModule, NbChatModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { ControlsComponent } from './controls/controls.component';
 import { SquareHinterComponent } from './square-hinter/square-hinter.component';
@@ -28,6 +28,7 @@ import { environment } from '../environments/environment';
     FormsModule,
     ReactiveFormsModule,
     NbThemeModule.forRoot({ name: 'cosmic' }),
+    NbChatModule,
     NbLayoutModule,
     NbEvaIconsModule,
     NbButtonModule,

@@ -1,12 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import io from "socket.io-client";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ChatService } from '../chat.service';
 
 
 @Component({
   selector: "app-board",
   templateUrl: "./board.component.html",
-  styleUrls: ["./board.component.scss"]
+  styleUrls: ["./board.component.scss"],
+  styles: [`
+    nb-chat {
+      width: 300px;
+      margin: 1rem;
+    }
+    `],
 })
 export class BoardComponent implements OnInit {
 
@@ -21,6 +28,7 @@ export class BoardComponent implements OnInit {
   user_Data = {
     team: "",
     hinter: false,
+    name: "",
   };
   hintIn: string;
   quantIn: string;
@@ -33,22 +41,28 @@ export class BoardComponent implements OnInit {
     quantity: new FormControl('', [Validators.required, Validators.maxLength(2)])
   });
   hintGiven: boolean;
-  
+  messages: string[] = [];
 
-  constructor() {
+
+  constructor(private chatService: ChatService) {
 
   }
 
-  get word(){
+  get word() {
     return this.hintForm.get('word')
   }
 
-  get quantity(){
+  get quantity() {
     return this.hintForm.get('quantity')
   }
 
   ngOnInit() {
     this.socket = io("http://localhost:3000")
+    this.chatService
+      .getMessages()
+      .subscribe((message: string) => {
+        this.messages.push(message);
+      });
   }
 
   newGame() {
@@ -58,11 +72,11 @@ export class BoardComponent implements OnInit {
   ngAfterViewInit() {
     this.socket.on("game", game => {
       console.log(game);
-      this.combinedGuesser=[];
+      this.combinedGuesser = [];
       this.words = game.board.words;
       this.clicked = game.board.clicked;
       this.labels = game.board.labels;
-      if (this.redIsNext != game.redIsNext){
+      if (this.redIsNext != game.redIsNext) {
         console.log("new round")
         this.hintGiven = false;
       }
@@ -78,12 +92,13 @@ export class BoardComponent implements OnInit {
     this.socket.on("user_data", user_data => {
       this.user_Data.team = user_data.team;
       this.user_Data.hinter = user_data.hinter;
+      this.user_Data.name = user_data.name;
       console.log(this.user_Data);
     });
-    this.socket.on("hinterBoard", hinterBoard =>{
+    this.socket.on("hinterBoard", hinterBoard => {
       console.log("Hinterboard")
       console.log(hinterBoard)
-      this.combinedHinter=[];
+      this.combinedHinter = [];
       for (var i = 0; i < hinterBoard.length; i++) {
         this.combinedHinter.push([this.words[i], hinterBoard[i]]);
       }
@@ -92,7 +107,7 @@ export class BoardComponent implements OnInit {
 
   }
 
-  guesserDone(){
+  guesserDone() {
     this.socket.emit("guesserDone", true)
   }
 
@@ -117,6 +132,15 @@ export class BoardComponent implements OnInit {
     return this.user_Data.team;
   }
 
+  sendMessage(event: any, userName: string) {
+    var message =  {
+      text: event.message,
+      reply: false,
+      date: new Date(),
+      name: userName,
+    }
+    this.chatService.sendMessage(message);
+  }
 
   makeMove(idx: number) {
     if ((this.user_Data.team == "red" && this.redIsNext) || (this.user_Data.team == "blue" && !this.redIsNext)) {

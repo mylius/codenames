@@ -49,5 +49,16 @@
             </div>
                 <button class="btn btn-primary" nbButton [disabled]="!hintForm.valid">Senden</button>
         </form>
+        <nb-chat title="Chat" size="medium" status="success">
+
+                <nb-chat-message *ngFor="let message of messages"
+                                 [message]="message.text"
+                                 [reply]="(message.name==user_Data.name)"
+                                 [sender]="message.name"
+                                 [date]="message.date"></nb-chat-message>
+                <nb-chat-form (send)="sendMessage($event, user_Data.name, 'https://i.gifer.com/no.gif')" [showButton]="false" [dropFiles]="true">
+                </nb-chat-form>
+              </nb-chat>
     </div>
+    
 </div>
